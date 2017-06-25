@@ -18,6 +18,7 @@ library(foreign) #to read in the .dta format
 library(stargazer)
 library(dplyr)
 library(ggplot2)
+library(multcomp)
 ksubs <- read.dta("401ksubs.dta")
 wagepan <- read.dta("WAGEPAN.DTA")
 ```
@@ -60,7 +61,7 @@ So, 29 households heads are at the age of 25. In total, we have 1494 married hou
 #### 1(b) Model & Coefficients (1)
 the regression $nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u$ gives information about the relationship between the independet variables, also called predictor, ($inc, age, age^2$) and the dependent variable ($nettfa$)
 
-As this model is a lin-lin model, one unit increase of one of the predictors (while holding the others fix) will lead to an increase in nettfa by the predictors coefficient.
+As this model is a level-level model, one unit increase of one of the predictors (while holding the others fix) will lead to an increase in nettfa by the predictors coefficient.
 
 $\frac{\delta nettfa}{\delta inc}=\beta_1$
 $\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age$
@@ -84,9 +85,43 @@ The partial effect of age on nettfa for someone who is aged 30 years is:
 $\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age = -1.56905 + 2*0.03647*30 = 0.61915$ (619 dollars)
 
 #### 1(d) Regression for age = 25
-```{r}
 
+$nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u$
+
+$\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age$ ; (age=25)
+
+
+$\theta_2 = \beta_2 + \beta_3 *2* 25$  
+$\Leftrightarrow \beta_2 = \theta_2 - \beta_3 *2*25$
+
+Insert in equation from 1(b):  
+
+$nettfa = \beta_0 + \beta_1 * inc + (\theta_2 - \beta_3 *2*25) * age + \beta_3 * age^2 + u$
+
+$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age - \beta_3 *2*25 * age + \beta_3 * age^2 + u$
+
+$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2 - 2*25*age) + u$
+
+????
+
+$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2-2*25+625)^2 + u$
+
+$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age-25)^2 + u$
+
+
+```{r}
+ksubs_1$age25 <- (ksubs_1$age-25)^2
+
+mod1d <- lm(nettfa ~ inc + age + age25, data = ksubs_1)
+summary(mod1d)
 ```
+
+$H_0: \theta_2 =0 $ ; (two-sided test, $\alpha = 0.05$)
+
+As the p-value of $\theta_2 = 0.72294 > 0.05$ H0 cannot be rejected. This variable might not have an significant effect on the dependet variable nettfam. 
+
+
+lincom command??? Linear combinations of parameters
 
 
 ##Task 2
