@@ -30,7 +30,7 @@ head(ksubs)
 
 First of all, as the exercise description requires just the data for married couples without children (marr=1, fsize = 2), we have to filter our data. This is done by using the r-package dplyr. 
 
-The new data table is saved in the new object: ksubs_1
+The new data table is saved in the new data frame: ksubs_1
 ```{r}
 ksubs_1 <- ksubs %>%
   filter(marr ==1 & fsize == 2)
@@ -49,7 +49,8 @@ ksubs_1_age <- ksubs_1 %>%
   arrange(age)
 
 head(ksubs_1_age)
-paste("Number of households in the restricted dataset:", nrow(ksubs_1))
+paste("Number of household heads at the age of", ksubs_1_age[1,1],":", ksubs_1_age[1,2])
+paste("Number of all households in the restricted dataset:", nrow(ksubs_1))
 
 ggplot(ksubs_1_age,aes(age,n))+geom_col()+labs(
       y="Number of household heads",
@@ -84,7 +85,7 @@ $x = | \frac{\beta_2}{2*\beta_3} |= |\frac{-1.56905}{2*0.03647}| = 21.51 $. This
 The partial effect of age on nettfa for someone who is aged 30 years is:
 $\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age = -1.56905 + 2*0.03647*30 = 0.61915$ (619 dollars)
 
-#### 1(d) Regression for age = 25
+#### 1(d) Regression for age of 25
 
 $nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u$
 
@@ -96,24 +97,26 @@ $\Leftrightarrow \beta_2 = \theta_2 - \beta_3 *2*25$
 
 Insert in equation from 1(b):  
 
-$nettfa = \beta_0 + \beta_1 * inc + (\theta_2 - \beta_3 *2*25) * age + \beta_3 * age^2 + u$
+$nettfa = \alpha_0 + \beta_1 * inc + (\theta_2 - \beta_3 *2*25) * age + \beta_3 * age^2 + u$
 
-$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age - \beta_3 *2*25 * age + \beta_3 * age^2 + u$
+$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age - \beta_3 *2*25 * age + \beta_3 * age^2 + u$
 
-$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2 - 2*25*age) + u$
+$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2 - 2*25*age) + u$
+
 
 ????
 
-$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2-2*25+625)^2 + u$
 
-$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age-25)^2 + u$
+$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2-2*25+625)^2 + u$
+
+$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age-25)^2 + u$
 
 
 ```{r}
 ksubs_1$age25 <- (ksubs_1$age-25)^2
 
 mod1d <- lm(nettfa ~ inc + age + age25, data = ksubs_1)
-summary(mod1d)
+(sum_mod1d <- summary(mod1d))
 ```
 
 $H_0: \theta_2 =0 $ ; (two-sided test, $\alpha = 0.05$)
@@ -124,9 +127,140 @@ As the p-value of $\theta_2 = 0.72294 > 0.05$ H0 cannot be rejected. This variab
 lincom command??? Linear combinations of parameters
 
 
-##Task 2
 
-#### 2(a) 
+
+
+
+#### 1(e) Differences between $\beta_0$ and $\alpha_0$
+```{r}
+paste("the difference between the point estimates are:", mod1b$coefficients[1] - mod1d$coefficients[1])
+```
+
+In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering the variables around an age of 25 years. In that case, the intercept gives answers to one particular effect, being 25 years old, on nettfa. 
+
+#### 1(f) The effect of age variable
+```{r}
+mod1f <- lm(nettfa ~ inc + age25, data = ksubs_1)
+(sum_mod1f<- summary(mod1f))
+
+#not working??
+#stargazer(mod1d,mod1f, title = "Comparison of models mod1f and mod1d", type="html", model.names = FALSE,column.labels = c("mod1f", "mod1d"), column.separate = c(1,1), style = "qje")
+
+paste("adjusted R_squared of Model 1d:", sum_mod1d$adj.r.squared)
+paste("adjusted R_squared of Model 1f:", sum_mod1f$adj.r.squared)
+```
+
+Looking at the adjusted $R^2$, it is seen that both models have a quite similar model quality. In both models nearly 20.3% of nettfa variance can be explanied by the predictors. This measurement supports the low significance level of age in model 1d. As mentioned in 1d, $H_0: \theta_2 =0 $ cannot be rejected. Therefore, the variable age can be omitted without losing model quality. 
+
+#### 1(g) Income of 50,000 
+
+```{r}
+paste("The estimated  nettfa of an household which has an income of 50000 is:", round(sum_mod1f$coefficients[1,1] + sum_mod1f$coefficients[2,1] * 50 *1000,2))
+```
+```{r}
+ksubs_1$preds <- predict(inc=50, mod1f)
+
+ggplot(ksubs_1,aes(x=age,y=preds))+geom_point()+geom_abline(col="red", size=0.8)+labs(
+      x="Age of household heads",
+      y="Prediction of nettfa",
+      title="Relationship between nettfa and age",
+      subtitle= "while holding income = $50,000 fix")
+```
+
+The plot shows a slight increase of nettfa by increasing the age of the household head. This is also seen in the model of 1c and 1d, which show the slope of income of $\beta_1 = 1.333$ ($1333).
+
+##Task 2
+For task 2, we have to restrict our data to single individuals (fsize =1).
+The new data table is saved in the new data frame: ksubs_2
+```{r}
+ksubs_2 <- ksubs %>%
+  filter(fsize == 1)
+```
+
+#### 2(a) Test heteroscedasticity
+```{r}
+ksubs_2$age25 <- (ksubs_2$age-25)^2
+mod2a <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2)
+#summary(mod2a)
+```
+
+To check whether our data is underlying a heteroscedastic distribution, we test the residuals of the previous model. This can be made by running a regression on the squared error residuals:
+
+$residuals^2 = \delta_0 + \delta_1 * inc + \delta_2 * (age-25) * \delta_3 *e401k + u$
+
+```{r}
+ksubs_2$residuals <- mod2a$residuals^2
+mod2a_resid <- lm(residuals ~ inc + age25 + e401k, data = ksubs_2)
+(sum_mod2a_resid <- summary(mod2a_resid))
+```
+
+The null hypothesis tests if there is no difference in the variance of the residuals. So H0 implies that our data is homoscedastic distributed (variance of 0). 
+
+$H_0:\delta_1 =0, \delta_2 =0, \delta_3 =0$ ; ($\alpha = 0.05$, two-sided)
+$H_1:\delta_1 !=0, \delta_2 !=0, \delta_3 !=0$
+
+Rejection rule: F > critical value
+
+```{r}
+paste("The f-statistic of model mod2a_resid is:", round(sum_mod2a_resid$fstatistic[1],2))
+```
+
+The critical value, which can be found in the f-table (on moodle) is 2.61 (using $k=3, \alpha = 0.05, df = 2013 $). This value can be also calculated via r:
+```{r}
+#(1-/alpha, k, n-k-1)
+qf(0.95, 3, nrow(ksubs_2)-4)
+```
+As the calculated f-value of 4.48 is greater than the critical value of 2.61, we reject $H_0$. This means we have heteroscedasticity. 
+
+This can be also tested by the LM version:
+
+$LM = n * R^2_u$
+
+```{r}
+LM = nrow(ksubs_2) * sum_mod2a_resid$r.squared
+paste("The LM value is:", round(LM,2))
+```
+As this value is far greater than the critical value of 2.61, we can reject $H_0$.
+
+####2(b) WLS model
+Due to the White Least Squares Estiation (WLS) Method data which underlyies heteroscedasticity can be transformed to a homoscedastic distibution. We assume $Var(u_i|inc_i) = \sigma^2$. Therefore, we divide all variables by the squareroot of income. 
+
+Heteroscedastic model:
+$nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u $
+
+Transformed/ homosceadstic model:
+$\frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u $
+
+To run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is $h = inc. 
+
+```{r}
+mod2b <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$inc)
+summary(mod2b)
+```
+
+Comparing models 2a and 2b: 
+```{r}
+#geht nicht :(
+stargazer(mod2a,mod2b, title = "Comparison of models mod2a and mod2b", type="html", model.names = FALSE,column.labels = c("mod2a", "mod2b"), column.separate = c(1,1), style = "qje")
+```
+
+####2(c) GLS 
+
+exp -> using log
+
+```{r}
+ksubs_2$logresiduals <- log(ksubs_2$residuals)
+```
+
+```{r}
+mod2c <- lm(logresiduals ~ inc + age25 + e401k, data = ksubs_2)
+#summary(mod2c)
+ksubs_2$predsexp <- exp(predict(mod2c))
+
+mod2c_gls <- lm(logresiduals ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$predsexp)
+summary(mod2c_gls) #???
+```
+
 
 ##Task 3
 
