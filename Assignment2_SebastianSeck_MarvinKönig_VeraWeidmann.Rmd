@@ -1,0 +1,34 @@
+---
+title: "Econometrics BSEL ST 2017 Assignment 2"
+author: "Vera Weidmann, Marvin Koenig, Sebastian Seck"
+date: "submission to Prof. Qari"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 4
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r Initialization, warning=FALSE, message=FALSE}
+library(foreign) #to read in the .dta format
+library(stargazer)
+ksubs <- read.dta("401ksubs.dta")
+wagepan <- read.dta("WAGEPAN.DTA")
+```
+
+##Task 1
+
+#### 1(a) Summary statistics
+
+##Task 2
+
+#### 2(a) Summary statistics
+
+##Task 3
+
+####3(i) Model statistics
+
