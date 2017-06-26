@@ -124,7 +124,7 @@ $H_0: \theta_2 =0 $ ; (two-sided test, $\alpha = 0.05$)
 As the p-value of $\theta_2 = 0.72294 > 0.05$ H0 cannot be rejected. This variable might not have an significant effect on the dependet variable nettfam. 
 
 
-lincom command??? Linear combinations of parameters
+lincom command??? Linear combinations of parameters -> linear hypothesis- package: car? john foxed
 
 
 
