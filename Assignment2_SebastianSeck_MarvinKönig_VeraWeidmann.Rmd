@@ -239,8 +239,7 @@ summary(mod2b)
 ```
 
 Comparing models 2a and 2b: 
-```{r}
-#geht nicht :(
+```{r,results="asis"}
 stargazer(mod2a,mod2b, title = "Comparison of models mod2a and mod2b", type="html", model.names = FALSE,column.labels = c("mod2a", "mod2b"), column.separate = c(1,1), style = "qje")
 ```
 
