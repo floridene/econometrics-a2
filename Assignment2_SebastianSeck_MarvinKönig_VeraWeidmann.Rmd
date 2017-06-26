@@ -71,8 +71,8 @@ $\beta_0$ is the intercept of the model. This illustarted the value of nettfa wh
 
 #### 1(c) Model & Coefficients (2)
 ```{r}
-mod1b <- lm(nettfa ~ inc + age + agesq, data = ksubs_1)
-summary(mod1b)
+mod1c <- lm(nettfa ~ inc + age + agesq, data = ksubs_1)
+summary(mod1c)
 
 paste("n:", nrow(ksubs_1))
 ```
@@ -91,26 +91,22 @@ $nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u$
 
 $\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age$ ; (age=25)
 
-
 $\theta_2 = \beta_2 + \beta_3 *2* 25$  
 $\Leftrightarrow \beta_2 = \theta_2 - \beta_3 *2*25$
 
 Insert in equation from 1(b):  
 
-$nettfa = \alpha_0 + \beta_1 * inc + (\theta_2 - \beta_3 *2*25) * age + \beta_3 * age^2 + u$
+$nettfa = \beta_0 + \beta_1 * inc + (\theta_2 - \beta_3 *2*25) * age + \beta_3 * age^2 + u$
 
-$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age - \beta_3 *2*25 * age + \beta_3 * age^2 + u$
+$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age - \beta_3 *2*25 * age + \beta_3 * age^2 + u$
 
-$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2 - 2*25*age) + u$
+$nettfa = \beta_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2 - 2*25*age) + u$
 
+The intercept of the regression model for household heads with age 25 is shifted by the effect of $25^2 = 625$). Therefore, we adhust $\beta_0$ to $\alpha_0$.
 
-????
-
-
-$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2-2*25+625)^2 + u$
+$nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age^2-2*25*age+625) + u$
 
 $nettfa = \alpha_0 + \beta_1 * inc + \theta_2 * age + \beta_3 (age-25)^2 + u$
-
 
 ```{r}
 ksubs_1$age25 <- (ksubs_1$age-25)^2
@@ -123,8 +119,29 @@ $H_0: \theta_2 =0 $ ; (two-sided test, $\alpha = 0.05$)
 
 As the p-value of $\theta_2 = 0.72294 > 0.05$ H0 cannot be rejected. This variable might not have an significant effect on the dependet variable nettfam. 
 
+The lincom command (in R: car-package) can be used to model the equation by unsing the original one without modifing the model. 
+
+
+
+HELP!!!
+
 
 lincom command??? Linear combinations of parameters -> linear hypothesis- package: car? john foxed
+Können es auch weg lassen nach Quari :D 
+
+
+```{r}
+library(multcomp)
+summary(glht(mod1c, linfct = c("age = 25")))
+
+#library(gmodels)
+library(car)
+linearHypothesis(mod1c, "age = 25") #?????????
+```
+
+
+
+
 
 
 
@@ -133,10 +150,10 @@ lincom command??? Linear combinations of parameters -> linear hypothesis- packag
 
 #### 1(e) Differences between $\beta_0$ and $\alpha_0$
 ```{r}
-paste("the difference between the point estimates are:", mod1b$coefficients[1] - mod1d$coefficients[1])
+paste("the difference between the point estimates are:", round(mod1c$coefficients[1] - mod1d$coefficients[1],2))
 ```
 
-In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering the variables around an age of 25 years. In that case, the intercept gives answers to one particular effect, being 25 years old, on nettfa. 
+In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering the all variables around an age of 25 years. In that case, also the intercept is shifted by -22.79. So, it shows the effect of being 25 years old while other variables are equal to 0. 
 
 #### 1(f) The effect of age variable
 ```{r}
@@ -169,7 +186,7 @@ ggplot(ksubs_1,aes(x=age,y=preds))+geom_point()+geom_abline(col="red", size=0.8)
 
 The plot shows a slight increase of nettfa by increasing the age of the household head. This is also seen in the model of 1c and 1d, which show the slope of income of $\beta_1 = 1.333$ ($1333).
 
-##Task 2
+##Task 2 Heteroscedasticity
 For task 2, we have to restrict our data to single individuals (fsize =1).
 The new data table is saved in the new data frame: ksubs_2
 ```{r}
@@ -226,42 +243,76 @@ As this value is far greater than the critical value of 2.61, we can reject $H_0
 Due to the White Least Squares Estiation (WLS) Method data which underlyies heteroscedasticity can be transformed to a homoscedastic distibution. We assume $Var(u_i|inc_i) = \sigma^2$. Therefore, we divide all variables by the squareroot of income. 
 
 Heteroscedastic model:
-$nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u $
+
+$nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u$
 
 Transformed/ homosceadstic model:
-$\frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u $
 
-To run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is $h = inc. 
+$\frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u$
 
+Manually, we could create new variables by calculating each used variable divided by $\sqrt{inc}$. In addition, we have to adjust $\beta_0$ by $\frac{1}{\sqrt{inc}}$.
+
+However, to run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is $h = inc. 
 ```{r}
 mod2b <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$inc)
 summary(mod2b)
 ```
+```{r}
+#manual approach: 
+ksubs_2$h <- 1/sqrt(ksubs_2$inc) #weight
+ksubs_2$nettfa_h <- ksubs_2$nettfa*ksubs_2$h
+ksubs_2$inc_h <- ksubs_2$inc*ksubs_2$h
+ksubs_2$age25_h <- ksubs_2$age25*ksubs_2$h
+ksubs_2$e401k_h <- ksubs_2$e401k*ksubs_2$h
+ksubs_2$intercept_h <- ksubs_2$h
+
+mod2b_manually <- lm(nettfa_h ~ inc_h + age25_h + e401k_h + intercept_h -1, data = ksubs_2)
+summary(mod2b_manually)
+```
+
 
 Comparing models 2a and 2b: 
 ```{r,results="asis"}
-stargazer(mod2a,mod2b, title = "Comparison of models mod2a and mod2b", type="html", model.names = FALSE,column.labels = c("mod2a", "mod2b"), column.separate = c(1,1), style = "qje")
+stargazer(mod2a,mod2b, mod2b_manually, title = "Comparison of models mod2a and mod2b", type="html", model.names = FALSE,column.labels = c("mod2a", "mod2b", "mod2b manually"), column.separate = c(1,1), style = "qje")
 ```
+It can be seen that the coeffiecients are smaller in the WLS model than in the normal OLS model. Furthermore, the Root-MSE is quite smaller than before. 
+
+However, comparing the manually calculated model in 2b with the one in R, we gain a a different value for R^2. 
 
 ####2(c) GLS 
 
-exp -> using log
+Under assuming  $Var(u_i|inc_i) = \sigma^2 exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$, we use a generalized least squares (GLS) apporach. This is done by running a regression on the log(residuals^2) of model 2a: 
+$log(u^2) = exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$
+
+Afterwards, we calcualte h by using the exp-function on the model output.
+$h= exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$
 
 ```{r}
 ksubs_2$logresiduals <- log(ksubs_2$residuals)
 ```
-
 ```{r}
-mod2c <- lm(logresiduals ~ inc + age25 + e401k, data = ksubs_2)
-#summary(mod2c)
-ksubs_2$predsexp <- exp(predict(mod2c))
+mod2c_resid <- lm(logresiduals ~ inc + age25 + e401k, data = ksubs_2)
+ksubs_2$h <- exp(predict(mod2c_resid))
 
-mod2c_gls <- lm(logresiduals ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$predsexp)
-summary(mod2c_gls) #???
+mod2c_gls <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$h)
+summary(mod2c_gls)
+```
+
+##Task 3 Panal Data
+-> Chapter 14!! Slight different to what we did in class today :/
+
+####3(a) Pooled OLS
+```{r}
+mod3a <- lm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = wagepan)
+summary(mod3a)
 ```
 
 
-##Task 3
+####3(b) Random Effects
 
-####3(a) 
+-> xtreg gleichung :( -> Look for package!
 
+
+####3(b) Random Effects
+
+...
