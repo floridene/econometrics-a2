@@ -83,7 +83,9 @@ The calculation of the turnaround point is
 $x = | \frac{\beta_2}{2*\beta_3} |= |\frac{-1.56905}{2*0.03647}| = 21.51 $. This means starting with an age of 22 the nettfam will increase, before 22 the nettfam will decrease. 
 
 The partial effect of age on nettfa for someone who is aged 30 years is:
-$\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age = -1.56905 + 2*0.03647*30 = 0.61915$ (619 dollars)
+$$
+\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age = -1.56905 + 2*0.03647*30 = 0.61915 = 619 Dollars
+$$
 
 #### 1(d) Regression for age of 25
 
@@ -244,11 +246,15 @@ Due to the White Least Squares Estiation (WLS) Method data which underlyies hete
 
 Heteroscedastic model:
 
-$nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u$
+$$
+nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u
+$$
 
 Transformed/ homosceadstic model:
 
-$\frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u$
+$$
+\frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u
+$$
 
 Manually, we could create new variables by calculating each used variable divided by $\sqrt{inc}$. In addition, we have to adjust $\beta_0$ by $\frac{1}{\sqrt{inc}}$.
 
