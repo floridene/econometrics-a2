@@ -310,7 +310,7 @@ mod2c_gls <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_
 summary(mod2c_gls)
 ```
 
-##Task 3 Panal Data
+##Task 3 Panel Data
 -> Chapter 14!! Slight different to what we did in class today :/
 
 ####3(a) Pooled OLS
@@ -322,13 +322,68 @@ summary(mod3a)
 
 ####3(b) Random Effects
 ```{r, warning=FALSE}
-#mod3b <- plm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = wagepan, index = c("lwage","year"), method = "within", effect = "twoways")
-#summary(mod3b)
+pwagepan = plm.data(wagepan, index=c("nr","year"))
+
+mod3b <- plm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = pwagepan, model = "random")
+summary(mod3b)
 ```
 
--> xtreg gleichung :( -> Look for package!
+```{r, results="asis"}
+stargazer(mod3a, mod3b, title = "Comparison of models mod3a and mod3b", type = "html", column.labels = c("mod3a","mod3b"), style = "qje")
+```
+As seen in the table, the difference between the models is not stark. The $R^2$ is close to each other, further all variables have matching signs, the only larger deviation observed from another is with the intercept.
+As we know from the random effects assumtion, the fixed error $a_i$ is uncorrelated with the explanatory variables but is serially correlated with the individuals.
 
+#### 3(c) Comparison of RE and OLS standard errors
+Under the random effects assumption, the standard errors of the OLS model are invalid unless $a_i$ can be neglected. Further, they are often invalid since the serial correlation in the composite error of $a_i$ and $u_{it}$ is ignored. RE standard errors take the serial correlation and heteroskedasticity into account, thus they are adjusted for the fact that errors are correlated over time for a given i, which is why they are more reliable.
 
-####3(b) Random Effects
+#### 3(d) Focus on variables changing over time
+##### 3(d)1 Fixed effects model
+```{r}
+means <- aggregate(pwagepan[,c("expersq","married","union")],list(pwagepan$nr), mean)
+names(means)
+colnames(means) <- c("nr","mean_expersq","mean_married","mean_union")
+pwagepan <- merge(pwagepan,means)
+pwagepan$FEexpersq <- pwagepan$expersq - pwagepan$mean_expersq
+pwagepan$FEmarried <- pwagepan$married - pwagepan$mean_married
+pwagepan$FEunion <- pwagepan$union - pwagepan$mean_union
+mod3d1 <- lm(lwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
+summary(mod3d1)
 
-...
+# This is simply to verify the correctness of the above
+mod3d1Check <- plm(lwage ~ expersq + married + union, data = pwagepan, model = "within")
+summary(mod3d1Check)
+```
+##### 3(d2) Corrections of DF and SEs
+The adjusted number for degrees of freedom is $NT-N-k = 4360-545-3 = 3812$. This is because we adjust for the averagingm which was done on 545 different groups.
+
+```{r}
+(mod3d1_R2 <- sum(mod3d1$residuals^2)/3812)
+paste("The corrected standard error is",round(mod3d1_R2,3))
+```
+
+Corrected standard errors:
+```{r}
+mod3d2a <- lm(formula = FEexpersq ~ FEmarried + FEunion, data = pwagepan)
+summod3d2a <- summary(mod3d2a)
+a = sum(mod3d2a$residuals^2)
+b = sum(mod3d2a$fitted.values^2)
+(SEexpersq <- sqrt(mod3d1_R2/(a+b*(1-summod3d2a$r.squared))))
+
+mod3d2b <- lm(formula = FEmarried ~ FEexpersq + FEunion, data = pwagepan)
+summod3d2b <- summary(mod3d2b)
+c = sum(mod3d2b$residuals^2)
+d = sum(mod3d2b$fitted.values^2)
+(SEmarried <- sqrt(mod3d1_R2/(c+d*(1-summod3d2b$r.squared))))
+
+mod3d2c <- lm(formula = FEunion ~ FEexpersq + FEmarried, data = pwagepan)
+summod3d2c <- summary(mod3d2c)
+e = sum(mod3d2c$residuals^2)
+f = sum(mod3d2c$fitted.values^2)
+(SEunion <- sqrt(mod3d1_R2/(e+f*(1-summod3d2c$r.squared))))
+```
+
+##### 3(d3) Main difference between RE and FE
+* For random effect assumption the composite error $a_i + u_{it}$ is uncorrelated with the explanatory variables
+but it is serially correlated for observations coming from the same individual
+* In the fixed effect model it is assumed that there is a fixed effect $a_i$ which may show correlation with explanatory variables, unlike a random error term.

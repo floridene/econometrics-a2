@@ -1250,8 +1250,8 @@ summary(mod2c_gls)</code></pre>
 ## F-statistic: 44.93 on 3 and 2013 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
-<div id="task-3-panal-data" class="section level2">
-<h2>Task 3 Panal Data</h2>
+<div id="task-3-panel-data" class="section level2">
+<h2>Task 3 Panel Data</h2>
 <p>-&gt; Chapter 14!! Slight different to what we did in class today :/</p>
 <div id="a-pooled-ols" class="section level4">
 <h4>3(a) Pooled OLS</h4>
@@ -1285,13 +1285,523 @@ summary(mod3a)</code></pre>
 </div>
 <div id="b-random-effects" class="section level4">
 <h4>3(b) Random Effects</h4>
-<pre class="r"><code>#mod3b &lt;- plm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = wagepan, index = c(&quot;lwage&quot;,&quot;year&quot;), method = &quot;within&quot;, effect = &quot;twoways&quot;)
-#summary(mod3b)</code></pre>
-<p>-&gt; xtreg gleichung :( -&gt; Look for package!</p>
+<pre class="r"><code>pwagepan = plm.data(wagepan, index=c(&quot;nr&quot;,&quot;year&quot;))
+
+mod3b &lt;- plm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = pwagepan, model = &quot;random&quot;)
+summary(mod3b)</code></pre>
+<pre><code>## Oneway (individual) effect Random Effect Model 
+##    (Swamy-Arora's transformation)
+## 
+## Call:
+## plm(formula = lwage ~ educ + black + hisp + exper + expersq + 
+##     married + union, data = pwagepan, model = &quot;random&quot;)
+## 
+## Balanced Panel: n=545, T=8, N=4360
+## 
+## Effects:
+##                  var std.dev share
+## idiosyncratic 0.1235  0.3514  0.54
+## individual    0.1053  0.3245  0.46
+## theta:  0.6425  
+## 
+## Residuals :
+##    Min. 1st Qu.  Median 3rd Qu.    Max. 
+## -4.5800 -0.1450  0.0234  0.1860  1.5400 
+## 
+## Coefficients :
+##                Estimate  Std. Error t-value  Pr(&gt;|t|)    
+## (Intercept) -0.10745472  0.11067111 -0.9709  0.331633    
+## educ         0.10122422  0.00891035 11.3603 &lt; 2.2e-16 ***
+## black       -0.14413056  0.04759865 -3.0280  0.002476 ** 
+## hisp         0.02015014  0.04258652  0.4732  0.636124    
+## exper        0.11211603  0.00826116 13.5715 &lt; 2.2e-16 ***
+## expersq     -0.00406868  0.00059184 -6.8746 7.100e-12 ***
+## married      0.06280648  0.01677261  3.7446  0.000183 ***
+## union        0.10739575  0.01782986  6.0234 1.849e-09 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Total Sum of Squares:    656.98
+## Residual Sum of Squares: 539.88
+## R-Squared:      0.17824
+## Adj. R-Squared: 0.17692
+## F-statistic: 134.851 on 7 and 4352 DF, p-value: &lt; 2.22e-16</code></pre>
+<pre class="r"><code>stargazer(mod3a, mod3b, title = &quot;Comparison of models mod3a and mod3b&quot;, type = &quot;html&quot;, column.labels = c(&quot;mod3a&quot;,&quot;mod3b&quot;), style = &quot;qje&quot;)</code></pre>
+<table style="text-align:center">
+<caption>
+<strong>Comparison of models mod3a and mod3b</strong>
+</caption>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="2">
+lwage
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+<em>OLS</em>
+</td>
+<td>
+<em>panel</em>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+<em></em>
+</td>
+<td>
+<em>linear</em>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+mod3a
+</td>
+<td>
+mod3b
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+educ
+</td>
+<td>
+0.099<sup>***</sup>
+</td>
+<td>
+0.101<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.005)
+</td>
+<td>
+(0.009)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+black
+</td>
+<td>
+-0.144<sup>***</sup>
+</td>
+<td>
+-0.144<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.024)
+</td>
+<td>
+(0.048)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+hisp
+</td>
+<td>
+0.016
+</td>
+<td>
+0.020
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.021)
+</td>
+<td>
+(0.043)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+exper
+</td>
+<td>
+0.089<sup>***</sup>
+</td>
+<td>
+0.112<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.010)
+</td>
+<td>
+(0.008)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+expersq
+</td>
+<td>
+-0.003<sup>***</sup>
+</td>
+<td>
+-0.004<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.001)
+</td>
+<td>
+(0.001)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+married
+</td>
+<td>
+0.108<sup>***</sup>
+</td>
+<td>
+0.063<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.016)
+</td>
+<td>
+(0.017)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+union
+</td>
+<td>
+0.180<sup>***</sup>
+</td>
+<td>
+0.107<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.017)
+</td>
+<td>
+(0.018)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+-0.035
+</td>
+<td>
+-0.107
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(0.065)
+</td>
+<td>
+(0.111)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>N</em>
+</td>
+<td>
+4,360
+</td>
+<td>
+4,360
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.187
+</td>
+<td>
+0.178
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.185
+</td>
+<td>
+0.177
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+0.481 (df = 4352)
+</td>
+<td>
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic (df = 7; 4352)
+</td>
+<td>
+142.613<sup>***</sup>
+</td>
+<td>
+134.851<sup>***</sup>
+</td>
+</tr>
+<tr>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Notes:</em>
+</td>
+<td colspan="2" style="text-align:right">
+<sup>***</sup>Significant at the 1 percent level.
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="2" style="text-align:right">
+<sup>**</sup>Significant at the 5 percent level.
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="2" style="text-align:right">
+<sup>*</sup>Significant at the 10 percent level.
+</td>
+</tr>
+</table>
+<p>As seen in the table, the difference between the models is not stark. The <span class="math inline">\(R^2\)</span> is close to each other, further all variables have matching signs, the only larger deviation observed from another is with the intercept. As we know from the random effects assumtion, the fixed error <span class="math inline">\(a_i\)</span> is uncorrelated with the explanatory variables but is serially correlated with the individuals.</p>
 </div>
-<div id="b-random-effects-1" class="section level4">
-<h4>3(b) Random Effects</h4>
-<p>…</p>
+<div id="c-comparison-of-re-and-ols-standard-errors" class="section level4">
+<h4>3(c) Comparison of RE and OLS standard errors</h4>
+<p>Under the random effects assumption, the standard errors of the OLS model are invalid unless <span class="math inline">\(a_i\)</span> can be neglected. Further, they are often invalid since the serial correlation in the composite error of <span class="math inline">\(a_i\)</span> and <span class="math inline">\(u_{it}\)</span> is ignored. RE standard errors take the serial correlation and heteroskedasticity into account, thus they are adjusted for the fact that errors are correlated over time for a given i, which is why they are more reliable.</p>
+</div>
+<div id="d-focus-on-variables-changing-over-time" class="section level4">
+<h4>3(d) Focus on variables changing over time</h4>
+<div id="d1-fixed-effects-model" class="section level5">
+<h5>3(d)1 Fixed effects model</h5>
+<pre class="r"><code>means &lt;- aggregate(pwagepan[,c(&quot;expersq&quot;,&quot;married&quot;,&quot;union&quot;)],list(pwagepan$nr), mean)
+names(means)</code></pre>
+<pre><code>## [1] &quot;Group.1&quot; &quot;expersq&quot; &quot;married&quot; &quot;union&quot;</code></pre>
+<pre class="r"><code>colnames(means) &lt;- c(&quot;nr&quot;,&quot;mean_expersq&quot;,&quot;mean_married&quot;,&quot;mean_union&quot;)
+pwagepan &lt;- merge(pwagepan,means)
+pwagepan$FEexpersq &lt;- pwagepan$expersq - pwagepan$mean_expersq
+pwagepan$FEmarried &lt;- pwagepan$married - pwagepan$mean_married
+pwagepan$FEunion &lt;- pwagepan$union - pwagepan$mean_union
+mod3d1 &lt;- lm(lwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
+summary(mod3d1)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = lwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -5.2301 -0.2903  0.0295  0.3270  2.3639 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.6491472  0.0078100 211.159  &lt; 2e-16 ***
+## FEexpersq   0.0036991  0.0002709  13.654  &lt; 2e-16 ***
+## FEmarried   0.1073429  0.0260678   4.118  3.9e-05 ***
+## FEunion     0.0827625  0.0283216   2.922  0.00349 ** 
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5157 on 4356 degrees of freedom
+## Multiple R-squared:  0.06315,    Adjusted R-squared:  0.06251 
+## F-statistic: 97.88 on 3 and 4356 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code># This is simply to verify the correctness of the above
+mod3d1Check &lt;- plm(lwage ~ expersq + married + union, data = pwagepan, model = &quot;within&quot;)
+summary(mod3d1Check)</code></pre>
+<pre><code>## Oneway (individual) effect Within Model
+## 
+## Call:
+## plm(formula = lwage ~ expersq + married + union, data = pwagepan, 
+##     model = &quot;within&quot;)
+## 
+## Balanced Panel: n=545, T=8, N=4360
+## 
+## Residuals :
+##    Min. 1st Qu.  Median 3rd Qu.    Max. 
+## -4.1200 -0.1310  0.0169  0.1700  1.4700 
+## 
+## Coefficients :
+##           Estimate Std. Error t-value  Pr(&gt;|t|)    
+## expersq 0.00369909 0.00018911 19.5604 &lt; 2.2e-16 ***
+## married 0.10734286 0.01819629  5.8992 3.971e-09 ***
+## union   0.08276249 0.01976950  4.1864 2.898e-05 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Total Sum of Squares:    572.05
+## Residual Sum of Squares: 493.96
+## R-Squared:      0.13651
+## Adj. R-Squared: 0.012599
+## F-statistic: 200.873 on 3 and 3812 DF, p-value: &lt; 2.22e-16</code></pre>
+</div>
+<div id="d2-corrections-of-df-and-ses" class="section level5">
+<h5>3(d2) Corrections of DF and SEs</h5>
+<p>The adjusted number for degrees of freedom is <span class="math inline">\(NT-N-k = 4360-545-3 = 3812\)</span>. This is because we adjust for the averagingm which was done on 545 different groups.</p>
+<pre class="r"><code>(mod3d1_R2 &lt;- sum(mod3d1$residuals^2)/3812)</code></pre>
+<pre><code>## [1] 0.3038933</code></pre>
+<pre class="r"><code>paste(&quot;The corrected standard error is&quot;,round(mod3d1_R2,3))</code></pre>
+<pre><code>## [1] &quot;The corrected standard error is 0.304&quot;</code></pre>
+<p>Corrected standard errors:</p>
+<pre class="r"><code>mod3d2a &lt;- lm(formula = FEexpersq ~ FEmarried + FEunion, data = pwagepan)
+summod3d2a &lt;- summary(mod3d2a)
+a = sum(mod3d2a$residuals^2)
+b = sum(mod3d2a$fitted.values^2)
+(SEexpersq &lt;- sqrt(mod3d1_R2/(a+b*(1-summod3d2a$r.squared))))</code></pre>
+<pre><code>## [1] 0.000270888</code></pre>
+<pre class="r"><code>mod3d2b &lt;- lm(formula = FEmarried ~ FEexpersq + FEunion, data = pwagepan)
+summod3d2b &lt;- summary(mod3d2b)
+c = sum(mod3d2b$residuals^2)
+d = sum(mod3d2b$fitted.values^2)
+(SEmarried &lt;- sqrt(mod3d1_R2/(c+d*(1-summod3d2b$r.squared))))</code></pre>
+<pre><code>## [1] 0.02606797</code></pre>
+<pre class="r"><code>mod3d2c &lt;- lm(formula = FEunion ~ FEexpersq + FEmarried, data = pwagepan)
+summod3d2c &lt;- summary(mod3d2c)
+e = sum(mod3d2c$residuals^2)
+f = sum(mod3d2c$fitted.values^2)
+(SEunion &lt;- sqrt(mod3d1_R2/(e+f*(1-summod3d2c$r.squared))))</code></pre>
+<pre><code>## [1] 0.03025463</code></pre>
+</div>
+<div id="d3-main-difference-between-re-and-fe" class="section level5">
+<h5>3(d3) Main difference between RE and FE</h5>
+<ul>
+<li>For random effect assumption the composite error <span class="math inline">\(a_i + u_{it}\)</span> is uncorrelated with the explanatory variables but it is serially correlated for observations coming from the same individual</li>
+<li>In the fixed effect model it is assumed that there is a fixed effect <span class="math inline">\(a_i\)</span> which may show correlation with explanatory variables, unlike a random error term.</li>
+</ul>
+</div>
 </div>
 </div>
 
