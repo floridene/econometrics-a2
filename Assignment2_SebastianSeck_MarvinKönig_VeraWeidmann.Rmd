@@ -124,30 +124,6 @@ $H_0: \theta_2 =0$ ; (two-sided test, $\alpha = 0.05$)
 
 As the p-value of $\theta_2 = 0.72294 > 0.05$, $H_0$ cannot be rejected. This variable might not have a significant effect on the dependent variable nettfam. 
 
-The lincom command (in R: car-package) can be used to model the equation by using the original one without modifying the model. 
-
-NO IDEA!!!! lincom command??? Linear combinations of parameters -> linear hypothesis- package: car? john foxed
-K?nnen es auch weg lassen nach Quari :D 
-
-```{r}
-#???????????
-library(multcomp)
-summary(glht(mod1c, linfct = c("age = 25")))
-
-#library(gmodels)
-library(car)
-linearHypothesis(mod1c, "age = 25") #?????????
-```
-
-
-
-
-
-
-
-
-
-
 #### 1(e) Differences between $\beta_0$ and $\alpha_0$
 ```{r}
 paste("the difference between the point estimates are:", round(mod1c$coefficients[1] - mod1d$coefficients[1],2))
@@ -198,7 +174,7 @@ ksubs_2 <- ksubs %>%
   filter(fsize == 1)
 ```
 
-#### 2(a) Test heteroscedasticity
+#### 2(a) Breusch-Pagan
 ```{r}
 ksubs_2$age25 <- (ksubs_2$age-25)^2
 mod2a <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2)
@@ -351,7 +327,7 @@ mod3d1Check <- plm(lwage ~ expersq + married + union, data = pwagepan, model = "
 summary(mod3d1Check)
 ```
 ##### 3(d2) Corrections of DF and SEs
-The adjusted number for degrees of freedom is $NT-N-k = 4360-545-3 = 3812$. This is because we adjust for the averagingm which was done on 545 different groups.
+The adjusted number for degrees of freedom is $NT-N-k = 4360-545-3 = 3812$. This is because we adjust for the averaging which was done on 545 different groups.
 
 ```{r}
 (mod3d1_R2 <- sum(mod3d1$residuals^2)/3812)

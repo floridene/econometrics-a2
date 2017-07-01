@@ -276,10 +276,10 @@ head(ksubs_1_age)</code></pre>
 </div>
 <div id="b-model-coefficients-1" class="section level4">
 <h4>1(b) Model &amp; Coefficients (1)</h4>
-<p>the regression <span class="math inline">\(nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u\)</span> gives information about the relationship between the independet variables, also called predictor, (<span class="math inline">\(inc, age, age^2\)</span>) and the dependent variable (<span class="math inline">\(nettfa\)</span>)</p>
-<p>As this model is a level-level model, one unit increase of one of the predictors (while holding the others fix) will lead to an increase in nettfa by the predictors coefficient.</p>
+<p>The regression <span class="math inline">\(nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u\)</span> gives information about the relationship between the independet variables, also called predictor, (<span class="math inline">\(inc, age, age^2\)</span>) and the dependent variable (<span class="math inline">\(nettfa\)</span>)</p>
+<p>As this model is a level-level model, one unit increase of one of the predictors (while holding the others fix) will lead to an increase in nettfa by the predictors’ coefficient.</p>
 <p><span class="math inline">\(\frac{\delta nettfa}{\delta inc}=\beta_1\)</span> <br /> <span class="math inline">\(\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age\)</span></p>
-<p><span class="math inline">\(\beta_0\)</span> is the intercept of the model. This illustarted the value of nettfa when all predictors are equal to 0.</p>
+<p><span class="math inline">\(\beta_0\)</span> is the intercept of the model. This covers the value of nettfa when all predictors are equal to 0.</p>
 </div>
 <div id="c-model-coefficients-2" class="section level4">
 <h4>1(c) Model &amp; Coefficients (2)</h4>
@@ -351,51 +351,13 @@ mod1d &lt;- lm(nettfa ~ inc + age + age25, data = ksubs_1)
 ## Multiple R-squared:  0.2043, Adjusted R-squared:  0.2027 
 ## F-statistic: 127.5 on 3 and 1490 DF,  p-value: &lt; 2.2e-16</code></pre>
 <p><span class="math inline">\(H_0: \theta_2 =0\)</span> ; (two-sided test, <span class="math inline">\(\alpha = 0.05\)</span>)</p>
-<p>As the p-value of <span class="math inline">\(\theta_2 = 0.72294 &gt; 0.05\)</span>, <span class="math inline">\(H_0\)</span> cannot be rejected. This variable might not have an significant effect on the dependet variable nettfam.</p>
-<p>The lincom command (in R: car-package) can be used to model the equation by using the original one without modifing the model.</p>
-<p>HELP!!!</p>
-<p>lincom command??? Linear combinations of parameters -&gt; linear hypothesis- package: car? john foxed K?nnen es auch weg lassen nach Quari :D</p>
-<pre class="r"><code>library(multcomp)
-summary(glht(mod1c, linfct = c(&quot;age = 25&quot;)))</code></pre>
-<pre><code>## 
-##   Simultaneous Tests for General Linear Hypotheses
-## 
-## Fit: lm(formula = nettfa ~ inc + age + agesq, data = ksubs_1)
-## 
-## Linear Hypotheses:
-##           Estimate Std. Error t value Pr(&gt;|t|)    
-## age == 25   -1.569      1.607  -16.53   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## (Adjusted p values reported -- single-step method)</code></pre>
-<pre class="r"><code>#library(gmodels)
-library(car)</code></pre>
-<pre><code>## Warning: package 'car' was built under R version 3.3.3</code></pre>
-<pre><code>## 
-## Attaching package: 'car'</code></pre>
-<pre><code>## The following object is masked from 'package:dplyr':
-## 
-##     recode</code></pre>
-<pre class="r"><code>linearHypothesis(mod1c, &quot;age = 25&quot;) #?????????</code></pre>
-<pre><code>## Linear hypothesis test
-## 
-## Hypothesis:
-## age = 25
-## 
-## Model 1: restricted model
-## Model 2: nettfa ~ inc + age + agesq
-## 
-##   Res.Df      RSS Df Sum of Sq      F    Pr(&gt;F)    
-## 1   1491 11755258                                  
-## 2   1490  9932935  1   1822323 273.36 &lt; 2.2e-16 ***
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+<p>As the p-value of <span class="math inline">\(\theta_2 = 0.72294 &gt; 0.05\)</span>, <span class="math inline">\(H_0\)</span> cannot be rejected. This variable might not have a significant effect on the dependent variable nettfam.</p>
 </div>
 <div id="e-differences-between-beta_0-and-alpha_0" class="section level4">
 <h4>1(e) Differences between <span class="math inline">\(\beta_0\)</span> and <span class="math inline">\(\alpha_0\)</span></h4>
 <pre class="r"><code>paste(&quot;the difference between the point estimates are:&quot;, round(mod1c$coefficients[1] - mod1d$coefficients[1],2))</code></pre>
 <pre><code>## [1] &quot;the difference between the point estimates are: 22.79&quot;</code></pre>
-<p>In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering the all variables around an age of 25 years. In that case, also the intercept is shifted by -22.79. So, it shows the effect of being 25 years old while other variables are equal to 0.</p>
+<p>In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering all variables around an age of 25 years. In that case, also the intercept is shifted by -22.79. So, it shows the effect of being 25 years old while other variables are equal to 0.</p>
 </div>
 <div id="f-the-effect-of-age-variable" class="section level4">
 <h4>1(f) The effect of age variable</h4>
@@ -660,7 +622,7 @@ F Statistic
 <pre><code>## [1] &quot;adjusted R_squared of Model 1d: 0.202702918091984&quot;</code></pre>
 <pre class="r"><code>paste(&quot;adjusted R_squared of Model 1f:&quot;, sum_mod1f$adj.r.squared)</code></pre>
 <pre><code>## [1] &quot;adjusted R_squared of Model 1f: 0.203170418422801&quot;</code></pre>
-<p>Looking at the adjusted <span class="math inline">\(R^2\)</span>, it is seen that both models have a quite similar model quality. In both models nearly 20.3% of nettfa variance can be explanied by the predictors. This measurement supports the low significance level of age in model 1d. As mentioned in 1d, <span class="math inline">\(H_0: \space \theta_2 =0\)</span> cannot be rejected. Therefore, the variable age can be omitted without losing model quality.</p>
+<p>Looking at the adjusted <span class="math inline">\(R^2\)</span>, it is seen that both models have a quite similar model quality. In both models nearly 20.3% of nettfa variance can be explained by the predictors. This measurement supports the low significance level of age in model 1d. As mentioned in 1d, <span class="math inline">\(H_0: \space \theta_2 =0\)</span> cannot be rejected. Therefore, the variable age can be omitted without losing model quality.</p>
 </div>
 <div id="g-income-of-50000" class="section level4">
 <h4>1(g) Income of 50,000</h4>
@@ -682,8 +644,8 @@ ggplot(ksubs_1,aes(x=age,y=preds))+geom_point()+geom_abline(col=&quot;red&quot;,
 <p>For task 2, we have to restrict our data to single individuals (fsize =1). The new data table is saved in the new data frame: ksubs_2</p>
 <pre class="r"><code>ksubs_2 &lt;- ksubs %&gt;%
   filter(fsize == 1)</code></pre>
-<div id="a-test-heteroscedasticity" class="section level4">
-<h4>2(a) Test heteroscedasticity</h4>
+<div id="a-breusch-pagan" class="section level4">
+<h4>2(a) Breusch-Pagan</h4>
 <pre class="r"><code>ksubs_2$age25 &lt;- (ksubs_2$age-25)^2
 mod2a &lt;- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2)
 #summary(mod2a)</code></pre>
@@ -712,12 +674,12 @@ mod2a_resid &lt;- lm(residuals ~ inc + age25 + e401k, data = ksubs_2)
 ## Residual standard error: 33360 on 2013 degrees of freedom
 ## Multiple R-squared:  0.006629,   Adjusted R-squared:  0.005148 
 ## F-statistic: 4.478 on 3 and 2013 DF,  p-value: 0.003863</code></pre>
-<p>The null hypothesis tests if there is no difference in the variance of the residuals. So <span class="math inline">\(H_0\)</span> implies that our data is homoscedastically distributed (variance of 0).</p>
+<p>The null hypothesis tests if there is no difference in the variance of the residuals. So <span class="math inline">\(H_0\)</span> implies that our data is homoscedastic distributed (variance of 0).</p>
 <p><span class="math inline">\(H_0:\delta_1 =0, \delta_2 =0, \delta_3 =0\)</span> ; (<span class="math inline">\(\alpha = 0.05\)</span>, two-sided) <br /> <span class="math inline">\(H_1:\delta_1 \neq0, \delta_2 \neq0, \delta_3 \neq0\)</span></p>
 <p>Rejection rule: F &gt; critical value</p>
 <pre class="r"><code>paste(&quot;The f-statistic of model mod2a_resid is:&quot;, round(sum_mod2a_resid$fstatistic[1],2))</code></pre>
 <pre><code>## [1] &quot;The f-statistic of model mod2a_resid is: 4.48&quot;</code></pre>
-<p>The critical value, which can be found in the f-table (on moodle) is 2.61 (using $k=3, = 0.05, df = 2013 $). This value can be also calculated via r:</p>
+<p>The critical value, which can be found in the f-table (on moodle) is 2.61 (using $ k=3, = 0.05, df = 2013$). This value can be also calculated via r:</p>
 <pre class="r"><code>#(1-/alpha, k, n-k-1)
 qf(0.95, 3, nrow(ksubs_2)-4)</code></pre>
 <pre><code>## [1] 2.609323</code></pre>
@@ -731,17 +693,17 @@ paste(&quot;The LM value is:&quot;, round(LM,2))</code></pre>
 </div>
 <div id="b-wls-model" class="section level4">
 <h4>2(b) WLS model</h4>
-<p>Due to the White Least Squares Estiation (WLS) Method data which underlyies heteroscedasticity can be transformed to a homoscedastic distibution. We assume <span class="math inline">\(Var(u_i|inc_i) = \sigma^2\)</span>. Therefore, we divide all variables by the squareroot of income.</p>
+<p>Due to the White Least Squares Estimation (WLS) Method data which underlies heteroscedasticity can be transformed to a homoscedastic distribution. We assume <span class="math inline">\(Var(u_i|inc_i) = \sigma^2\)</span>. Therefore, we divide all variables by the square root of income.</p>
 <p>Heteroscedastic model:</p>
 <p><span class="math display">\[
 nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u
 \]</span></p>
-<p>Transformed/ homosceadstic model:</p>
+<p>Transformed/ homoscedastic model:</p>
 <p><span class="math display">\[
 \frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u
 \]</span></p>
 <p>Manually, we could create new variables by calculating each used variable divided by <span class="math inline">\(\sqrt{inc}\)</span>. In addition, we have to adjust <span class="math inline">\(\beta_0\)</span> by <span class="math inline">\(\frac{1}{\sqrt{inc}}\)</span>.</p>
-<p>However, to run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is $h = inc.</p>
+<p>However, to run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is <span class="math inline">\(h = inc\)</span>.</p>
 <pre class="r"><code>mod2b &lt;- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$inc)
 summary(mod2b)</code></pre>
 <pre><code>## 
@@ -1214,13 +1176,13 @@ F Statistic
 </td>
 </tr>
 </table>
-<p>It can be seen that the coeffiecients are smaller in the WLS model than in the normal OLS model. Furthermore, the Root-MSE is quite smaller than before.</p>
+<p>It can be seen that the coefficients are smaller in the WLS model than in the normal OLS model. Furthermore, the Root-MSE is quite smaller than before.</p>
 <p>However, comparing the manually calculated model in 2b with the one in R, we gain a a different value for R^2.</p>
 </div>
 <div id="c-gls" class="section level4">
 <h4>2(c) GLS</h4>
-<p>Under assuming <span class="math inline">\(Var(u_i|inc_i) = \sigma^2 exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k\)</span>, we use a generalized least squares (GLS) apporach. This is done by running a regression on the log(residuals^2) of model 2a: <span class="math inline">\(log(u^2) = exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k\)</span></p>
-<p>Afterwards, we calcualte h by using the exp-function on the model output. <span class="math inline">\(h= exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k\)</span></p>
+<p>Under the assumption of <span class="math inline">\(Var(u_i|inc_i) = \sigma^2 exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k\)</span>, we use a generalized least squares (GLS) apporach. This is done by running a regression on the log(residuals^2) of model 2a: <span class="math inline">\(log(u^2) = exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k\)</span></p>
+<p>Afterwards, we calculate h by using the exp-function on the model output. <span class="math inline">\(h= exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k\)</span></p>
 <pre class="r"><code>ksubs_2$logresiduals &lt;- log(ksubs_2$residuals)</code></pre>
 <pre class="r"><code>mod2c_resid &lt;- lm(logresiduals ~ inc + age25 + e401k, data = ksubs_2)
 ksubs_2$h &lt;- exp(predict(mod2c_resid))
@@ -1251,7 +1213,6 @@ summary(mod2c_gls)</code></pre>
 </div>
 <div id="task-3-panel-data" class="section level2">
 <h2>Task 3 Panel Data</h2>
-<p>-&gt; Chapter 14!! Slight different to what we did in class today :/</p>
 <div id="a-pooled-ols" class="section level4">
 <h4>3(a) Pooled OLS</h4>
 <pre class="r"><code>mod3a &lt;- lm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = wagepan)
@@ -1281,6 +1242,7 @@ summary(mod3a)</code></pre>
 ## Residual standard error: 0.4807 on 4352 degrees of freedom
 ## Multiple R-squared:  0.1866, Adjusted R-squared:  0.1853 
 ## F-statistic: 142.6 on 7 and 4352 DF,  p-value: &lt; 2.2e-16</code></pre>
+<p><span class="math inline">\(R^2\)</span> is 18.66%. All variable are significant except hisp.</p>
 </div>
 <div id="b-random-effects" class="section level4">
 <h4>3(b) Random Effects</h4>
@@ -1698,46 +1660,47 @@ F Statistic (df = 7; 4352)
 </td>
 </tr>
 </table>
-<p>As seen in the table, the difference between the models is not stark. The <span class="math inline">\(R^2\)</span> is close to each other, further all variables have matching signs, the only larger deviation observed from another is with the intercept. As we know from the random effects assumtion, the fixed error <span class="math inline">\(a_i\)</span> is uncorrelated with the explanatory variables but is serially correlated with the individuals.</p>
+<p>As seen in the table, the difference between the models is not stark. The <span class="math inline">\(R^2\)</span> is close to each other, further all variables have matching signs, the only larger deviation observed from another is with the intercept. As we know from the random effects assumption, the fixed error <span class="math inline">\(a_i\)</span> is uncorrelated with the explanatory variables but is serially correlated with the individuals.</p>
 </div>
 <div id="c-comparison-of-re-and-ols-standard-errors" class="section level4">
 <h4>3(c) Comparison of RE and OLS standard errors</h4>
-<p>Under the random effects assumption, the standard errors of the OLS model are invalid unless <span class="math inline">\(a_i\)</span> can be neglected. Further, they are often invalid since the serial correlation in the composite error of <span class="math inline">\(a_i\)</span> and <span class="math inline">\(u_{it}\)</span> is ignored. RE standard errors take the serial correlation and heteroskedasticity into account, thus they are adjusted for the fact that errors are correlated over time for a given i, which is why they are more reliable.</p>
+<p>Under the random effects assumption, the standard errors of the OLS model are invalid unless <span class="math inline">\(a_i\)</span> can be neglected. Further, they are often invalid since the serial correlation in the composite error of <span class="math inline">\(a_i\)</span> and <span class="math inline">\(u_{it}\)</span> is ignored. RE standard errors take the serial correlation and heteroscedasticity into account, thus they are adjusted for the fact that errors are correlated over time for a given i, which is why they are more reliable.</p>
 </div>
 <div id="d-focus-on-variables-changing-over-time" class="section level4">
 <h4>3(d) Focus on variables changing over time</h4>
 <div id="d1-fixed-effects-model" class="section level5">
 <h5>3(d)1 Fixed effects model</h5>
-<pre class="r"><code>means &lt;- aggregate(pwagepan[,c(&quot;expersq&quot;,&quot;married&quot;,&quot;union&quot;)],list(pwagepan$nr), mean)
+<pre class="r"><code>means &lt;- aggregate(pwagepan[,c(&quot;lwage&quot;,&quot;expersq&quot;,&quot;married&quot;,&quot;union&quot;)],list(pwagepan$nr), mean)
 names(means)</code></pre>
-<pre><code>## [1] &quot;Group.1&quot; &quot;expersq&quot; &quot;married&quot; &quot;union&quot;</code></pre>
-<pre class="r"><code>colnames(means) &lt;- c(&quot;nr&quot;,&quot;mean_expersq&quot;,&quot;mean_married&quot;,&quot;mean_union&quot;)
+<pre><code>## [1] &quot;Group.1&quot; &quot;lwage&quot;   &quot;expersq&quot; &quot;married&quot; &quot;union&quot;</code></pre>
+<pre class="r"><code>colnames(means) &lt;- c(&quot;nr&quot;,&quot;mean_lwage&quot;,&quot;mean_expersq&quot;,&quot;mean_married&quot;,&quot;mean_union&quot;)
 pwagepan &lt;- merge(pwagepan,means)
+pwagepan$FElwage &lt;- pwagepan$lwage - pwagepan$mean_lwage
 pwagepan$FEexpersq &lt;- pwagepan$expersq - pwagepan$mean_expersq
 pwagepan$FEmarried &lt;- pwagepan$married - pwagepan$mean_married
 pwagepan$FEunion &lt;- pwagepan$union - pwagepan$mean_union
-mod3d1 &lt;- lm(lwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
+mod3d1 &lt;- lm(FElwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
 summary(mod3d1)</code></pre>
 <pre><code>## 
 ## Call:
-## lm(formula = lwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
+## lm(formula = FElwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
-## -5.2301 -0.2903  0.0295  0.3270  2.3639 
+## -4.1182 -0.1312  0.0169  0.1699  1.4725 
 ## 
 ## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 1.6491472  0.0078100 211.159  &lt; 2e-16 ***
-## FEexpersq   0.0036991  0.0002709  13.654  &lt; 2e-16 ***
-## FEmarried   0.1073429  0.0260678   4.118  3.9e-05 ***
-## FEunion     0.0827625  0.0283216   2.922  0.00349 ** 
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -2.269e-16  5.100e-03   0.000        1    
+## FEexpersq    3.699e-03  1.769e-04  20.910  &lt; 2e-16 ***
+## FEmarried    1.073e-01  1.702e-02   6.306 3.15e-10 ***
+## FEunion      8.276e-02  1.849e-02   4.475 7.83e-06 ***
 ## ---
 ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 ## 
-## Residual standard error: 0.5157 on 4356 degrees of freedom
-## Multiple R-squared:  0.06315,    Adjusted R-squared:  0.06251 
-## F-statistic: 97.88 on 3 and 4356 DF,  p-value: &lt; 2.2e-16</code></pre>
+## Residual standard error: 0.3367 on 4356 degrees of freedom
+## Multiple R-squared:  0.1365, Adjusted R-squared:  0.1359 
+## F-statistic: 229.5 on 3 and 4356 DF,  p-value: &lt; 2.2e-16</code></pre>
 <pre class="r"><code># This is simply to verify the correctness of the above
 mod3d1Check &lt;- plm(lwage ~ expersq + married + union, data = pwagepan, model = &quot;within&quot;)
 summary(mod3d1Check)</code></pre>
@@ -1769,35 +1732,35 @@ summary(mod3d1Check)</code></pre>
 </div>
 <div id="d2-corrections-of-df-and-ses" class="section level5">
 <h5>3(d2) Corrections of DF and SEs</h5>
-<p>The adjusted number for degrees of freedom is <span class="math inline">\(NT-N-k = 4360-545-3 = 3812\)</span>. This is because we adjust for the averagingm which was done on 545 different groups.</p>
+<p>The adjusted number for degrees of freedom is <span class="math inline">\(NT-N-k = 4360-545-3 = 3812\)</span>. This is because we adjust for the averaging which was done on 545 different groups.</p>
 <pre class="r"><code>(mod3d1_R2 &lt;- sum(mod3d1$residuals^2)/3812)</code></pre>
-<pre><code>## [1] 0.3038933</code></pre>
+<pre><code>## [1] 0.1295815</code></pre>
 <pre class="r"><code>paste(&quot;The corrected standard error is&quot;,round(mod3d1_R2,3))</code></pre>
-<pre><code>## [1] &quot;The corrected standard error is 0.304&quot;</code></pre>
+<pre><code>## [1] &quot;The corrected standard error is 0.13&quot;</code></pre>
 <p>Corrected standard errors:</p>
 <pre class="r"><code>mod3d2a &lt;- lm(formula = FEexpersq ~ FEmarried + FEunion, data = pwagepan)
 summod3d2a &lt;- summary(mod3d2a)
 a = sum(mod3d2a$residuals^2)
 b = sum(mod3d2a$fitted.values^2)
 (SEexpersq &lt;- sqrt(mod3d1_R2/(a+b*(1-summod3d2a$r.squared))))</code></pre>
-<pre><code>## [1] 0.000270888</code></pre>
+<pre><code>## [1] 0.0001768889</code></pre>
 <pre class="r"><code>mod3d2b &lt;- lm(formula = FEmarried ~ FEexpersq + FEunion, data = pwagepan)
 summod3d2b &lt;- summary(mod3d2b)
 c = sum(mod3d2b$residuals^2)
 d = sum(mod3d2b$fitted.values^2)
 (SEmarried &lt;- sqrt(mod3d1_R2/(c+d*(1-summod3d2b$r.squared))))</code></pre>
-<pre><code>## [1] 0.02606797</code></pre>
+<pre><code>## [1] 0.01702229</code></pre>
 <pre class="r"><code>mod3d2c &lt;- lm(formula = FEunion ~ FEexpersq + FEmarried, data = pwagepan)
 summod3d2c &lt;- summary(mod3d2c)
 e = sum(mod3d2c$residuals^2)
 f = sum(mod3d2c$fitted.values^2)
 (SEunion &lt;- sqrt(mod3d1_R2/(e+f*(1-summod3d2c$r.squared))))</code></pre>
-<pre><code>## [1] 0.03025463</code></pre>
+<pre><code>## [1] 0.01975617</code></pre>
 </div>
 <div id="d3-main-difference-between-re-and-fe" class="section level5">
 <h5>3(d3) Main difference between RE and FE</h5>
 <ul>
-<li>For random effect assumption the composite error <span class="math inline">\(a_i + u_{it}\)</span> is uncorrelated with the explanatory variables but it is serially correlated for observations coming from the same individual</li>
+<li>For random effect assumption the composite error <span class="math inline">\(a_i + u_{it}\)</span> is uncorrelated with the explanatory variables, but it is serially correlated for observations coming from the same individual.</li>
 <li>In the fixed effect model it is assumed that there is a fixed effect <span class="math inline">\(a_i\)</span> which may show correlation with explanatory variables, unlike a random error term.</li>
 </ul>
 </div>
