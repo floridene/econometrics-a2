@@ -62,15 +62,15 @@ ggplot(ksubs_1_age,aes(age,n))+geom_col()+labs(
 So, 29 households heads are at the age of 25. In total, we have 1494 married households without children. 
 
 #### 1(b) Model & Coefficients (1)
-the regression $nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u$ gives information about the relationship between the independet variables, also called predictor, ($inc, age, age^2$) and the dependent variable ($nettfa$)
+The regression $nettfa = \beta_0 + \beta_1 * inc + \beta_2 * age + \beta_3 * age^2 + u$ gives information about the relationship between the independet variables, also called predictor, ($inc, age, age^2$) and the dependent variable ($nettfa$)
 
-As this model is a level-level model, one unit increase of one of the predictors (while holding the others fix) will lead to an increase in nettfa by the predictors coefficient.
+As this model is a level-level model, one unit increase of one of the predictors (while holding the others fix) will lead to an increase in nettfa by the predictors' coefficient.
 
 $\frac{\delta nettfa}{\delta inc}=\beta_1$
 <br/>
 $\frac{\delta nettfa}{\delta age}=\beta_2 + 2*\beta_3*age$
 
-$\beta_0$ is the intercept of the model. This illustarted the value of nettfa when all predictors are equal to 0. 
+$\beta_0$ is the intercept of the model. This covers the value of nettfa when all predictors are equal to 0.
 
 #### 1(c) Model & Coefficients (2)
 ```{r}
@@ -122,20 +122,15 @@ mod1d <- lm(nettfa ~ inc + age + age25, data = ksubs_1)
 
 $H_0: \theta_2 =0$ ; (two-sided test, $\alpha = 0.05$)
 
-As the p-value of $\theta_2 = 0.72294 > 0.05$, $H_0$ cannot be rejected. This variable might not have an significant effect on the dependet variable nettfam. 
+As the p-value of $\theta_2 = 0.72294 > 0.05$, $H_0$ cannot be rejected. This variable might not have a significant effect on the dependent variable nettfam. 
 
-The lincom command (in R: car-package) can be used to model the equation by using the original one without modifing the model. 
+The lincom command (in R: car-package) can be used to model the equation by using the original one without modifying the model. 
 
-
-
-HELP!!!
-
-
-lincom command??? Linear combinations of parameters -> linear hypothesis- package: car? john foxed
+NO IDEA!!!! lincom command??? Linear combinations of parameters -> linear hypothesis- package: car? john foxed
 K?nnen es auch weg lassen nach Quari :D 
 
-
 ```{r}
+#???????????
 library(multcomp)
 summary(glht(mod1c, linfct = c("age = 25")))
 
@@ -158,7 +153,7 @@ linearHypothesis(mod1c, "age = 25") #?????????
 paste("the difference between the point estimates are:", round(mod1c$coefficients[1] - mod1d$coefficients[1],2))
 ```
 
-In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering the all variables around an age of 25 years. In that case, also the intercept is shifted by -22.79. So, it shows the effect of being 25 years old while other variables are equal to 0. 
+In the first model (mod1b) the intercept presents the value of nettfa while all independet variables (inc and age) are equal to 0. As the age of one household head cannot be 0, the second equation (mod1d) makes more sense. By using (age-25) we are centering all variables around an age of 25 years. In that case, also the intercept is shifted by -22.79. So, it shows the effect of being 25 years old while other variables are equal to 0. 
 
 #### 1(f) The effect of age variable
 ```{r}
@@ -175,7 +170,7 @@ paste("adjusted R_squared of Model 1d:", sum_mod1d$adj.r.squared)
 paste("adjusted R_squared of Model 1f:", sum_mod1f$adj.r.squared)
 ```
 
-Looking at the adjusted $R^2$, it is seen that both models have a quite similar model quality. In both models nearly 20.3% of nettfa variance can be explanied by the predictors. This measurement supports the low significance level of age in model 1d. As mentioned in 1d, $H_0: \space \theta_2 =0$ cannot be rejected. Therefore, the variable age can be omitted without losing model quality. 
+Looking at the adjusted $R^2$, it is seen that both models have a quite similar model quality. In both models nearly 20.3% of nettfa variance can be explained by the predictors. This measurement supports the low significance level of age in model 1d. As mentioned in 1d, $H_0: \space \theta_2 =0$ cannot be rejected. Therefore, the variable age can be omitted without losing model quality. 
 
 #### 1(g) Income of 50,000 
 
@@ -195,6 +190,7 @@ ggplot(ksubs_1,aes(x=age,y=preds))+geom_point()+geom_abline(col="red", size=0.8)
 The plot shows a slight increase of nettfa by increasing the age of the household head. This is also seen in the model of 1c and 1d, which show the slope of income of $\beta_1 = 1.333$ ($1333).
 
 ##Task 2 Heteroscedasticity
+
 For task 2, we have to restrict our data to single individuals (fsize =1).
 The new data table is saved in the new data frame: ksubs_2
 ```{r}
@@ -219,7 +215,7 @@ mod2a_resid <- lm(residuals ~ inc + age25 + e401k, data = ksubs_2)
 (sum_mod2a_resid <- summary(mod2a_resid))
 ```
 
-The null hypothesis tests if there is no difference in the variance of the residuals. So $H_0$ implies that our data is homoscedastically distributed (variance of 0). 
+The null hypothesis tests if there is no difference in the variance of the residuals. So $H_0$ implies that our data is homoscedastic distributed (variance of 0). 
 
 $H_0:\delta_1 =0, \delta_2 =0, \delta_3 =0$ ; ($\alpha = 0.05$, two-sided) <br/>
 $H_1:\delta_1 \neq0, \delta_2 \neq0, \delta_3 \neq0$
@@ -230,7 +226,7 @@ Rejection rule: F > critical value
 paste("The f-statistic of model mod2a_resid is:", round(sum_mod2a_resid$fstatistic[1],2))
 ```
 
-The critical value, which can be found in the f-table (on moodle) is 2.61 (using $k=3, \alpha = 0.05, df = 2013 $). This value can be also calculated via r:
+The critical value, which can be found in the f-table (on moodle) is 2.61 (using $ k=3, \alpha = 0.05, df = 2013$). This value can be also calculated via r:
 ```{r}
 #(1-/alpha, k, n-k-1)
 qf(0.95, 3, nrow(ksubs_2)-4)
@@ -248,7 +244,7 @@ paste("The LM value is:", round(LM,2))
 As this value is far greater than the critical value of 2.61, we can reject $H_0$.
 
 ####2(b) WLS model
-Due to the White Least Squares Estiation (WLS) Method data which underlyies heteroscedasticity can be transformed to a homoscedastic distibution. We assume $Var(u_i|inc_i) = \sigma^2$. Therefore, we divide all variables by the squareroot of income. 
+Due to the White Least Squares Estimation (WLS) Method data which underlies heteroscedasticity can be transformed to a homoscedastic distribution. We assume $Var(u_i|inc_i) = \sigma^2$. Therefore, we divide all variables by the square root of income. 
 
 Heteroscedastic model:
 
@@ -256,7 +252,7 @@ $$
 nettfa= \beta_0 + \beta_1 * inc + \beta_2 * (age-25)^2 + \beta_3 * e401k + u
 $$
 
-Transformed/ homosceadstic model:
+Transformed/ homoscedastic model:
 
 $$
 \frac{nettfa}{\sqrt{inc}}= \beta_0 * \frac{1}{\sqrt{inc}}+ \beta_1 * \frac{inc}{\sqrt{inc}} + \beta_2 * \frac{(age-25)^2}{\sqrt{inc}} + \beta_3 * \frac{e401k}{\sqrt{inc}} + u
@@ -264,7 +260,7 @@ $$
 
 Manually, we could create new variables by calculating each used variable divided by $\sqrt{inc}$. In addition, we have to adjust $\beta_0$ by $\frac{1}{\sqrt{inc}}$.
 
-However, to run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is $h = inc. 
+However, to run a WLS model in R, we just have to assign the weight to the regression command. In this case the weight is $h = inc$. 
 ```{r}
 mod2b <- lm(nettfa ~ inc + age25 + e401k, data = ksubs_2, weights = 1/ksubs_2$inc)
 summary(mod2b)
@@ -287,16 +283,16 @@ Comparing models 2a and 2b:
 ```{r,results="asis"}
 stargazer(mod2a,mod2b, mod2b_manually, title = "Comparison of models mod2a and mod2b", type="html", model.names = FALSE,column.labels = c("mod2a", "mod2b", "mod2b manually"), column.separate = c(1,1), style = "qje")
 ```
-It can be seen that the coeffiecients are smaller in the WLS model than in the normal OLS model. Furthermore, the Root-MSE is quite smaller than before. 
+It can be seen that the coefficients are smaller in the WLS model than in the normal OLS model. Furthermore, the Root-MSE is quite smaller than before. 
 
 However, comparing the manually calculated model in 2b with the one in R, we gain a a different value for R^2. 
 
 ####2(c) GLS 
 
-Under assuming  $Var(u_i|inc_i) = \sigma^2 exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$, we use a generalized least squares (GLS) apporach. This is done by running a regression on the log(residuals^2) of model 2a: 
+Under the assumption of $Var(u_i|inc_i) = \sigma^2 exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$, we use a generalized least squares (GLS) apporach. This is done by running a regression on the log(residuals^2) of model 2a: 
 $log(u^2) = exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$
 
-Afterwards, we calcualte h by using the exp-function on the model output.
+Afterwards, we calculate h by using the exp-function on the model output.
 $h= exp(\delta_0+\delta_1inc + \delta(age-25)^2+\delta_3e401k$
 
 ```{r}
@@ -311,14 +307,13 @@ summary(mod2c_gls)
 ```
 
 ##Task 3 Panel Data
--> Chapter 14!! Slight different to what we did in class today :/
 
 ####3(a) Pooled OLS
 ```{r}
 mod3a <- lm(lwage ~ educ + black + hisp + exper + expersq + married + union, data = wagepan)
 summary(mod3a)
 ```
-
+$R^2$ is 18.66%. All variable are significant except hisp. 
 
 ####3(b) Random Effects
 ```{r, warning=FALSE}
@@ -332,22 +327,23 @@ summary(mod3b)
 stargazer(mod3a, mod3b, title = "Comparison of models mod3a and mod3b", type = "html", column.labels = c("mod3a","mod3b"), style = "qje")
 ```
 As seen in the table, the difference between the models is not stark. The $R^2$ is close to each other, further all variables have matching signs, the only larger deviation observed from another is with the intercept.
-As we know from the random effects assumtion, the fixed error $a_i$ is uncorrelated with the explanatory variables but is serially correlated with the individuals.
+As we know from the random effects assumption, the fixed error $a_i$ is uncorrelated with the explanatory variables but is serially correlated with the individuals.
 
 #### 3(c) Comparison of RE and OLS standard errors
-Under the random effects assumption, the standard errors of the OLS model are invalid unless $a_i$ can be neglected. Further, they are often invalid since the serial correlation in the composite error of $a_i$ and $u_{it}$ is ignored. RE standard errors take the serial correlation and heteroskedasticity into account, thus they are adjusted for the fact that errors are correlated over time for a given i, which is why they are more reliable.
+Under the random effects assumption, the standard errors of the OLS model are invalid unless $a_i$ can be neglected. Further, they are often invalid since the serial correlation in the composite error of $a_i$ and $u_{it}$ is ignored. RE standard errors take the serial correlation and heteroscedasticity into account, thus they are adjusted for the fact that errors are correlated over time for a given i, which is why they are more reliable.
 
 #### 3(d) Focus on variables changing over time
 ##### 3(d)1 Fixed effects model
 ```{r}
-means <- aggregate(pwagepan[,c("expersq","married","union")],list(pwagepan$nr), mean)
+means <- aggregate(pwagepan[,c("lwage","expersq","married","union")],list(pwagepan$nr), mean)
 names(means)
-colnames(means) <- c("nr","mean_expersq","mean_married","mean_union")
+colnames(means) <- c("nr","mean_lwage","mean_expersq","mean_married","mean_union")
 pwagepan <- merge(pwagepan,means)
+pwagepan$FElwage <- pwagepan$lwage - pwagepan$mean_lwage
 pwagepan$FEexpersq <- pwagepan$expersq - pwagepan$mean_expersq
 pwagepan$FEmarried <- pwagepan$married - pwagepan$mean_married
 pwagepan$FEunion <- pwagepan$union - pwagepan$mean_union
-mod3d1 <- lm(lwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
+mod3d1 <- lm(FElwage ~ FEexpersq + FEmarried + FEunion, data = pwagepan)
 summary(mod3d1)
 
 # This is simply to verify the correctness of the above
@@ -384,6 +380,5 @@ f = sum(mod3d2c$fitted.values^2)
 ```
 
 ##### 3(d3) Main difference between RE and FE
-* For random effect assumption the composite error $a_i + u_{it}$ is uncorrelated with the explanatory variables
-but it is serially correlated for observations coming from the same individual
+* For random effect assumption the composite error $a_i + u_{it}$ is uncorrelated with the explanatory variables, but it is serially correlated for observations coming from the same individual.
 * In the fixed effect model it is assumed that there is a fixed effect $a_i$ which may show correlation with explanatory variables, unlike a random error term.
